@@ -12,9 +12,11 @@ defmodule TileServerWeb.Router do
   scope "/api", TileServerWeb do
     pipe_through :api
   end
+
   scope "/", TileServerWeb do
     pipe_through :browser
     get "/", MapController, :index
+    get "/tiles/:z/:x/:y", MapController, :tile
   end
 
   # Enables LiveDashboard only for development
