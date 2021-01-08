@@ -12,9 +12,16 @@ defmodule TileServer.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: TileServer.PubSub},
       # Start the Endpoint (http/https)
-      TileServerWeb.Endpoint
+      TileServerWeb.Endpoint,
       # Start a worker by calling: TileServer.Worker.start_link(arg)
       # {TileServer.Worker, arg}
+
+      %{
+        id: Sqlitex.Server,
+        start:
+          {Sqlitex.Server, :start_link,
+           [Application.get_env(:tile_server, :mbtiles_path), [name: TilesDB]]}
+      }
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

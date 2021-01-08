@@ -15,6 +15,7 @@ config :tile_server, TileServerWeb.Endpoint,
   pubsub_server: TileServer.PubSub,
   live_view: [signing_salt: "JLOovgbF"]
 
+config :tile_server, mbtiles_path: "priv/united_kingdom.mbtiles"
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

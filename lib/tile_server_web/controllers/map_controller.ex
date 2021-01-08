@@ -8,9 +8,10 @@ defmodule TileServerWeb.MapController do
   """
   def index(conn, _params) do
     meta = Mbtiles.get_metadata()
-    [w, s, e, n] = String.split(meta["bounds"], ",")
-    [lon, lat, zoom] = String.split(meta["center"], ",")
-    format = Jason.decode!(meta["json"])
+    [w, s, e, n] = String.split(meta.bounds, ",")
+    [lon, lat, zoom] = String.split(meta.center, ",")
+    layers = get_layer_ids(meta.json)
+    IO.inspect(layers)
 
     html(
       conn,
@@ -18,7 +19,7 @@ defmodule TileServerWeb.MapController do
       <head>
       <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
       <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
-      <script src="https://unpkg.com/leaflet.vectorgrid@1.2.0"></script>
+      <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.js"></script>
       </head>
       <body>
         <div id="map" style="height: 900px;"></div>
@@ -216,9 +217,12 @@ defmodule TileServerWeb.MapController do
       vectorTileStyling.roads      = vectorTileStyling.road;
 
         var openMapTilesLayer = L.vectorGrid.protobuf(openMapTilesUrl, {
-          attribution: '<%= {:safe, "#{meta["attribution"]}"} %>',
-          maxZoom: <%= meta["maxzoom"] %>,
-          minZoom: <%= meta["minzoom"] %>,
+          attribution: '<%= {:safe, "#{meta.attribution}"} %>',
+          minZoom: <%= meta.minzoom %>,
+          minZoom: 0,
+          //maxNativeZoom: <%= meta.maxzoom %>,
+          maxNativeZoom: 14,
+          maxZoom: 18,
           vectorTileLayerStyles: vectorTileStyling,
           maxBounds: bounds
         });
@@ -231,7 +235,8 @@ defmodule TileServerWeb.MapController do
   end
 
   def tile(conn, params) do
-    %{"z" => z, "x" => x, "y" => y} = params
+    %{z: z, x: x, y: y} = parse_tile_params(params)
+
     tile = Mbtiles.get_images(z, x, get_tms_y(z, y))
 
     conn
@@ -239,20 +244,19 @@ defmodule TileServerWeb.MapController do
     |> send_resp(200, tile)
   end
 
-  def get_tms_y(z, y) do
-    z = Integer.parse(z) |> elem(0)
-    y = Integer.parse(y) |> elem(0)
+  defp get_tms_y(z, y), do: round(:math.pow(2, z) - 1 - y)
 
-    (:math.pow(2, z) - 1 - y)
-    |> round()
-    |> Integer.to_string()
+  defp parse_tile_params(params) do
+    params
+    |> Enum.map(fn {k, v} -> {String.to_atom(k), String.to_integer(v)} end)
+    |> Map.new()
   end
-  def get_layer_ids() do
-    Mbtiles.get_metadata()
-    |> Map.get("json")
+
+  defp get_layer_ids(json) do
+    json
     |> Jason.decode!()
     |> Map.get("vector_layers")
-    |>Enum.map(&Map.get(&1, "id"))
-    |> Enum.sort
+    |> Enum.map(&Map.get(&1, "id"))
+    |> Enum.sort()
   end
 end
