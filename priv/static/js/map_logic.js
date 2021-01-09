@@ -204,7 +204,7 @@ var e = get("e")
 var w = get("w")
 var attribution = document.getElementById('data-div').innerHTML;
 var openMapTilesUrl = "http://localhost:4000/tiles/{z}/{x}/{y}";
-var openMapTilesUrl = "http://localhost:4000/static_tiles/{z}/{x}/{y}.pbf";
+//var openMapTilesUrl = "http://localhost:4000/static_tiles/{z}/{x}/{y}.pbf";
 
 var southWest = L.latLng(w, s),
     northEast = L.latLng(e, n),
