@@ -1,12 +1,13 @@
 defmodule TileServer.Mbtiles do
   def get_images(z, x, y) do
     query =
-      "SELECT tile_data FROM tiles where zoom_level =#{z} and tile_column =#{x} and tile_row =#{y}"
+      "SELECT tile_data FROM tiles where zoom_level = ? and tile_column = ? and tile_row = ?"
 
-    with {:ok, [data]} <- Sqlitex.Server.query(TilesDB, query),
+    with {:ok, [data]} <- Sqlitex.Server.query(TilesDB, query, bind: [z, x, y]),
          [tile_data: tile_blob] <- data,
          {:blob, tile} <- tile_blob do
-      :zlib.gunzip(tile)
+      tile
+      #:zlib.gunzip(tile)
     else
       error ->
         IO.inspect(error)

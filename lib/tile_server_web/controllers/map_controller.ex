@@ -34,7 +34,7 @@ defmodule TileServerWeb.MapController do
            data-lat="<%= lat %>"
            data-lon="<%= lon %>"
       ></div>
-      <div id="attr-div" style="display: none;"><%= {:safe, meta.attribution} %></div>
+      <div id="attr-div" style="display: none;"><%= {:safe, Map.get(meta, :attribution, "")} %></div>
       <script src="/js/map_logic.js"></script>
       </body>
       """
@@ -51,6 +51,7 @@ defmodule TileServerWeb.MapController do
 
       tile ->
         conn
+        |> prepend_resp_headers([{"content-encoding", "gzip"}])
         |> put_resp_content_type("application/octet-stream")
         |> send_resp(200, tile)
     end
@@ -64,7 +65,7 @@ defmodule TileServerWeb.MapController do
     |> Map.new()
   end
 
-  defp get_layer_ids(json) do
+  def get_layer_ids(json) do
     json
     |> Jason.decode!()
     |> Map.get("vector_layers")
