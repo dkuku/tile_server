@@ -23,7 +23,7 @@ defmodule TileServerWeb.MapController do
       </head>
       <body>
         <div id="map" style="height: 100vh;"></div>
-      <div id="data-div"
+      <div id="data-div" style="display: none;"
            data-s="<%= s %>"
            data-w="<%= w %>"
            data-n="<%= n %>"
@@ -33,8 +33,9 @@ defmodule TileServerWeb.MapController do
            data-maxzoom="<%= meta.maxzoom %>"
            data-lat="<%= lat %>"
            data-lon="<%= lon %>"
-      ></div>
-      <div id="attr-div" style="display: none;"><%= {:safe, Map.get(meta, :attribution, "")} %></div>
+      >
+        <%= {:safe, Map.get(meta, :attribution, "")} %>
+      </div>
       <script src="/js/map_logic.js"></script>
       </body>
       """
@@ -44,20 +45,25 @@ defmodule TileServerWeb.MapController do
 
   def tile(conn, params) do
     %{z: z, x: x, y: y} = parse_tile_params(params)
+    allow_gzip = allow_gzip?(conn)
 
-    case Mbtiles.get_images(z, x, get_tms_y(z, y)) do
+    case Mbtiles.get_images(z, x, y, tms: true, gzip: allow_gzip) do
       :error ->
         conn |> send_resp(404, "tile not found")
 
       tile ->
         conn
-        |> prepend_resp_headers([{"content-encoding", "gzip"}])
+        |> gzip_header(allow_gzip)
         |> put_resp_content_type("application/octet-stream")
         |> send_resp(200, tile)
     end
   end
 
-  defp get_tms_y(z, y), do: round(:math.pow(2, z) - 1 - y)
+  defp gzip_header(conn, true = _allow_gzip) do
+    prepend_resp_headers(conn, [{"content-encoding", "gzip"}])
+  end
+
+  defp gzip_header(conn, _), do: conn
 
   defp parse_tile_params(params) do
     params
@@ -72,4 +78,6 @@ defmodule TileServerWeb.MapController do
     |> Enum.map(&Map.get(&1, "id"))
     |> Enum.sort()
   end
+
+  defp allow_gzip?(conn), do: inspect(get_req_header(conn, "accept-encoding")) =~ "gzip"
 end
