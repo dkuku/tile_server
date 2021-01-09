@@ -24,7 +24,7 @@ defmodule TileServerWeb.Endpoint do
     at: "/",
     from: :tile_server,
     gzip: true,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    only: ~w(css static_tiles fonts images js favicon.ico robots.txt)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

@@ -39,5 +39,5 @@ defmodule TileServer.Mbtiles do
   defp maybe_get_tms_y(y, z, true), do: get_tms_y(y, z)
   defp maybe_get_tms_y(y, _z, _), do: y
 
-  defp get_tms_y(y, z), do: round(:math.pow(2, z) - 1 - y)
+  def get_tms_y(y, z), do: round(:math.pow(2, z) - 1 - y)
 end
