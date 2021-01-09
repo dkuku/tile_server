@@ -1,5 +1,3 @@
-# TileServer
-
 Some background on mbtiles files from [mapbox/mbtiles-spec](https://github.com/mapbox/mbtiles-spec/blob/master/1.3/spec.md)
 
 > MBTiles is a specification for storing tiled map data in SQLite databases for immediate usage and for transfer.
@@ -143,14 +141,14 @@ Here we are using bind params to avoid sql injection attacks. We also are return
     |> Map.new()
   end
 ```
-The other thing that weird is the get_tms_y function - many of the mbtiles files are stored with the y coordinate in reverse order this can be easily seen if the tiles are aligned weirdly when displayed. This param needs to be recalculated. 
-And the last puzzle piece is the router entry for our tiles
+The other thing that may be weird here is the `get_tms_y/2` function: many of the mbtiles files are stored with the y coordinate in reverse order this can be easily seen if the tiles look weird on the map like completly not aligned between rows when displayed.
+Last puzzle piece is the router entry for our tiles
 ```
     get "/", MapController, :index
     get "/tiles/:z/:x/:y", MapController, :tile
 ```
-Now we are good to go, My only bottleneck was showing the vector tiles in the browser full screen - this takes some time because the browser needs to process all the data. 
-But phoenix does here a good job:
+Now we are good to go, The only bottleneck I spotted is the the vector tiles need to be processed by javascript full screen needs processing power and this takes few seconds because the browser needs to process all the data. 
+Otherwise phoenix does a good job here:
 ```
 [info] GET /tiles/14/9050/5531   
 [info] Sent 200 in 3ms 
@@ -195,7 +193,9 @@ The endpoint.ex file needs to be modified:
     at: "/",
     only: ~w(css static_tiles fonts images js)
 ```
-When playing with it I thought to myself that this may be also done using elixir and I created a mix task that does it. By running `mix mbtile_unpack` in the repo directory the task will create a `priv/static/static_files` directory with a structure that can be served without any controllers.
+When playing with it I thought to myself that this may be also done using elixir and I created a mix task that does it. By running `mix mbtiles_unpack` in the repo directory the task will create a `priv/static/static_files` directory with a structure that can be served without any controllers.
 
-I created a demo phoenix project that shows a test page.
-To edit it play with the map_controller and /priv/static/map_logic.js where I added the js logic, all is done using [leaflet](https://leafletjs.com/) and the [vector grid plugin](https://github.com/Leaflet/Leaflet.VectorGrid). Demo repository can be found [tile_server](https://github.com/dkuku/tile_server)
+I packaged the backend code into a library, it can be installed using hex - source code is [here](https://github.com/dkuku/mbtiles) and also created a demo phoenix project that shows a how to use it.
+The main files in phoenix are the map_controller and /priv/static/map_logic.js where I added the javascript part, all is done using [leaflet](https://leafletjs.com/) and the [vector grid plugin](https://github.com/Leaflet/Leaflet.VectorGrid). Demo repository can be found [tile_server](https://github.com/dkuku/tile_server)
+
+
