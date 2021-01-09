@@ -19,7 +19,7 @@ defmodule TileServerWeb.MapController do
       <head>
       <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
       <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
-      <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.js"></script>
+      <script src="https://unpkg.com/leaflet.vectorgrid@1.2.0/dist/Leaflet.VectorGrid.js"></script>
       </head>
       <body>
         <div id="map" style="height: 100vh;"></div>
