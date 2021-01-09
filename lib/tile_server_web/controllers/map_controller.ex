@@ -1,13 +1,12 @@
 defmodule TileServerWeb.MapController do
   use TileServerWeb, :controller
   import Phoenix.HTML
-  alias TileServer.Mbtiles
 
   @doc """
   https://github.com/mapbox/mbtiles-spec/blob/master/1.3/spec.md
   """
   def index(conn, _params) do
-    meta = Mbtiles.get_metadata()
+    meta = Mbtiles.DB.get_metadata()
     [w, s, e, n] = String.split(meta.bounds, ",")
     [lon, lat, zoom] = String.split(meta.center, ",")
     layers = get_layer_ids(meta.json)
@@ -47,7 +46,7 @@ defmodule TileServerWeb.MapController do
     %{z: z, x: x, y: y} = parse_tile_params(params)
     allow_gzip = allow_gzip?(conn)
 
-    case Mbtiles.get_images(z, x, y, tms: true, gzip: allow_gzip) do
+    case Mbtiles.DB.get_images(z, x, y, tms: true, gzip: allow_gzip) do
       :error ->
         conn |> send_resp(404, "tile not found")
 
