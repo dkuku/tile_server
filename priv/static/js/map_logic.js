@@ -211,6 +211,7 @@ var southWest = L.latLng(w, s),
     bounds = L.latLngBounds(southWest, northEast);
 
 var map = L.map('map').setView([lat, lon], zoom)
+//var openMapTilesLayer = L.tileLayer(openMapTilesUrl, {
 var openMapTilesLayer = L.vectorGrid.protobuf(openMapTilesUrl, {
     attribution: attribution,
     minZoom: minZoom,

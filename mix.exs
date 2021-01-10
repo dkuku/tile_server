@@ -40,7 +40,7 @@ defmodule TileServer.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:mbtiles, "~> 0.1"}
+      {:mbtiles, "~> 0.2"}
     ]
   end
 
