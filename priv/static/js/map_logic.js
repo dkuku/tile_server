@@ -203,14 +203,18 @@ var n = get("n")
 var e = get("e")
 var w = get("w")
 var attribution = document.getElementById('data-div').innerHTML;
-var openMapTilesUrl = "http://localhost:4000/tiles/{z}/{x}/{y}";
-//var openMapTilesUrl = "http://localhost:4000/static_tiles/{z}/{x}/{y}.pbf";
 
 var southWest = L.latLng(w, s),
     northEast = L.latLng(e, n),
     bounds = L.latLngBounds(southWest, northEast);
 
 var map = L.map('map').setView([lat, lon], zoom)
+
+//Choose if controller or static
+var openMapTilesUrl = "http://localhost:4000/tiles/{z}/{x}/{y}";
+//var openMapTilesUrl = "http://localhost:4000/static_tiles/{z}/{x}/{y}.pbf";
+
+//Choose if images or vectors
 //var openMapTilesLayer = L.tileLayer(openMapTilesUrl, {
 var openMapTilesLayer = L.vectorGrid.protobuf(openMapTilesUrl, {
     attribution: attribution,
@@ -221,6 +225,12 @@ var openMapTilesLayer = L.vectorGrid.protobuf(openMapTilesUrl, {
 });
 openMapTilesLayer.addTo(map);
 
+map.on('click', function(e){
+  var coord = e.latlng;
+  var lat = coord.lat;
+  var lng = coord.lng;
+  console.log("You clicked the map at latitude: " + lat + " and longitude: " + lng);
+  });
 function onLocationFound(e) {
   var radius = e.accuracy / 2;
   L.marker(e.latlng).addTo(map)

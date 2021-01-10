@@ -15,8 +15,8 @@ config :tile_server, TileServerWeb.Endpoint,
   pubsub_server: TileServer.PubSub,
   live_view: [signing_salt: "JLOovgbF"]
 
-config :mbtiles, :mbtiles_path, "priv/united_kingdom.mbtiles"
-#config :mbtiles, :mbtiles_path, "priv/poland_katowice.mbtiles"
+#config :mbtiles, :mbtiles_path, "priv/united_kingdom.mbtiles"
+config :mbtiles, :mbtiles_path, "priv/poland_katowice.mbtiles"
 #config :mbtiles, :mbtiles_path, 'priv/test.mbtiles'
 
 
