@@ -15,8 +15,8 @@ config :tile_server, TileServerWeb.Endpoint,
   pubsub_server: TileServer.PubSub,
   live_view: [signing_salt: "JLOovgbF"]
 
-#config :mbtiles, :mbtiles_path, "priv/united_kingdom.mbtiles"
-config :mbtiles, :mbtiles_path, "priv/poland_katowice.mbtiles"
+config :mbtiles, :mbtiles_path, "priv/united_kingdom.mbtiles"
+#config :mbtiles, :mbtiles_path, "priv/poland_katowice.mbtiles"
 #config :mbtiles, :mbtiles_path, 'priv/test.mbtiles'
 
 
@@ -29,6 +29,10 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :tile_server, 
+database: "osm",
+hostname: "localhost",
+port: "5432"
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"

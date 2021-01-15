@@ -82,6 +82,6 @@ defmodule TileServerWeb.MapController do
   defp allow_gzip?(conn), do: inspect(get_req_header(conn, "accept-encoding")) =~ "gzip"
   defp get_content_type(:png), do: "image/png"
   defp get_content_type(:jpeg), do: "image/jpeg"
-  defp get_content_type(:pbf), do: "application/octet-stream"
-  defp get_content_type(:pbf_gz), do: "application/octet-stream"
+  defp get_content_type(:pbf), do: "application/vnd.mapbox-vector-tile"
+  defp get_content_type(:pbf_gz), do: "application/vnd.mapbox-vector-tile"
 end
